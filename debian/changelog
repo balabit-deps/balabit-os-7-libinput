@@ -1,3 +1,11 @@
+libinput (1.10.4-1ubuntu0.18.04.2) bionic; urgency=medium
+
+  * Unset INPUT_PROP_BUTTONPAD for Dell Precision 7x50. (LP: #1905819)
+  * Update control build-dep libevdev-dev (>= 1.5.8+dfsg-1ubuntu0.1) for
+    libevdev_disable_property API.
+
+ -- Kai-Chuan Hsieh <kaichuan.hsieh@canonical.com>  Mon, 30 Nov 2020 20:08:24 +0800
+
 libinput (1.10.4-1ubuntu0.18.04.1) bionic; urgency=medium
 
   * dont-disable-tapping-on-mt-tool-palm.diff: Don't disable tapping if

@@ -9,7 +9,7 @@ Build-Depends:
  pkg-config,
  libmtdev-dev (>= 1.1.0),
  libudev-dev,
- libevdev-dev (>= 0.4),
+ libevdev-dev (>= 1.5.8+dfsg-1ubuntu0.1),
  libwacom-dev (>= 0.20),
 Standards-Version: 4.1.1
 Vcs-Git: https://salsa.debian.org/xorg-team/lib/libinput.git
@@ -71,7 +71,7 @@ Depends:
  libinput10 (= ${binary:Version}),
  libmtdev-dev (>= 1.1.0),
  libudev-dev,
- libevdev-dev (>= 0.4),
+ libevdev-dev (>= 1.5.8+dfsg-1ubuntu0.1),
  libwacom-dev (>= 0.20),
  ${shlibs:Depends},
  ${misc:Depends},

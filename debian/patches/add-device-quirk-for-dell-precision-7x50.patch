@@ -1,0 +1,52 @@
+quirks: add quirk for Dell Precision 7550/7750 touchpad
+
+Dell Precision 7550/7750 touchpad report device capability denoted by [1] is wrongly
+configured as clickpad, so that kernel driver will set INPUT_PROP_BUTTONPAD bit,
+unset it for keep handling BTN_RIGHT event in libinput.
+
+[1] https://docs.microsoft.com/en-us/windows-hardware/design/component-guidelines/windows-precision-touchpad-required-hid-top-level-collections
+--- a/udev/90-libinput-model-quirks.hwdb
++++ b/udev/90-libinput-model-quirks.hwdb
+@@ -97,6 +97,9 @@
+ libinput:name:*AlpsPS/2 ALPS GlidePoint:dmi:*svnDellInc.:pnLatitudeE6220:*
+  LIBINPUT_ATTR_PRESSURE_RANGE=100:90
+ 
++libinput:name:DELL09C?:00 0488:120A Touchpad:dmi:*svnDellInc.:pnPrecision7?50:*
++ LIBINPUT_MODEL_DELL_PRECISION7X50_TOUCHPAD=1
++
+ ##########################################
+ # Elantech
+ ##########################################
+--- a/src/evdev.h
++++ b/src/evdev.h
+@@ -125,6 +125,7 @@
+ 	EVDEV_MODEL_LOGITECH_MARBLE_MOUSE = (1 << 26),
+ 	EVDEV_MODEL_TABLET_NO_PROXIMITY_OUT = (1 << 27),
+ 	EVDEV_MODEL_MS_NANO_TRANSCEIVER = (1 << 28),
++	EVDEV_MODEL_DELL_PRECISION7X50_TOUCHPAD = (1 << 29),
+ };
+ 
+ enum evdev_button_scroll_state {
+--- a/src/evdev.c
++++ b/src/evdev.c
+@@ -1265,6 +1265,7 @@
+ 		MODEL(LOGITECH_MARBLE_MOUSE),
+ 		MODEL(TABLET_NO_PROXIMITY_OUT),
+ 		MODEL(MS_NANO_TRANSCEIVER),
++		MODEL(DELL_PRECISION7X50_TOUCHPAD),
+ #undef MODEL
+ 		{ "ID_INPUT_TRACKBALL", EVDEV_MODEL_TRACKBALL },
+ 		{ NULL, EVDEV_MODEL_DEFAULT },
+@@ -1861,6 +1862,12 @@
+ 	/* Logitech Marble Mouse claims to have a middle button */
+ 	if (device->model_flags & EVDEV_MODEL_LOGITECH_MARBLE_MOUSE)
+ 		libevdev_disable_event_code(device->evdev, EV_KEY, BTN_MIDDLE);
++
++	/* Touchpad is not a clickpad but INPUT_PROP_BUTTONPAD is set */
++	if (device->model_flags & EVDEV_MODEL_DELL_PRECISION7X50_TOUCHPAD)
++		libevdev_disable_property(device->evdev,
++					  INPUT_PROP_BUTTONPAD);
++
+ }
+ 
+ static void
